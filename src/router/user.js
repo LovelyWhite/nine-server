@@ -10,7 +10,8 @@ const router = express.Router()
 const { BASE_URL } = constants
 router.post('/:sendToId/biu', async (req, res) => {
   const sendToId = req.params.sendToId
-  const { content, userId } = req.body
+  const { content } = req.body
+  const userId = req.headers.authorization
   const openId = getUser(sendToId)
   if (!openId) {
     res.status(400).send('User not found')
@@ -25,7 +26,6 @@ router.post('/:sendToId/biu', async (req, res) => {
       sendToId,
       sendFromId: userId,
       content,
-      userId,
       color,
     })
     const { _id } = await message.save()

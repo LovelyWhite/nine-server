@@ -1,3 +1,5 @@
+// BASE_URL: 'http://127.0.0.1:3000',
+// BASE_URL: 'http://suxitech.cn:3000',
 export default {
   APPID: 'wxe831b6baee750321',
   SECRET: 'da00caf066073c526e9a573a9b171e3f',
