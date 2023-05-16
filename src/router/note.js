@@ -19,9 +19,6 @@ const checkAdd = checkSchema({
     isBoolean: true,
     default: false,
   },
-  userId: {
-    isEmpty: { negated: true },
-  },
 })
 
 router.post('/', checkAdd, async (req, res) => {
@@ -32,7 +29,8 @@ router.post('/', checkAdd, async (req, res) => {
   }
   try {
     const data = matchedData(req)
-    const note = new NoteModel(data)
+    const userId = req.headers.authorization
+    const note = new NoteModel({ ...data, userId })
     await note.save()
     res.send()
   } catch (e) {
@@ -40,24 +38,32 @@ router.post('/', checkAdd, async (req, res) => {
   }
 })
 
-const checkSearch = checkSchema({
-  userId: {
-    in: ['query'],
-    isEmpty: { negated: true },
-  },
+router.post('/:id/private', async (req, res) => {
+  const noteId = req.params.id
+  try {
+    const { isPrivate } =
+      (await NoteModel.findById(noteId, 'isPrivate').exec()) || {}
+    const note = await NoteModel.findByIdAndUpdate(
+      noteId,
+      { $set: { isPrivate: !isPrivate } },
+      { new: true }
+    )
+    res.send({
+      isPrivate: note.isPrivate,
+    })
+  } catch (e) {
+    res.status(400).send(e?.message)
+  }
 })
 
-router.get('/', checkSearch, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const validateResult = validationResult(req)
-    if (!validateResult.isEmpty()) {
-      throw new Error(JSON.stringify(validateResult.array()))
-    }
+    const userId = req.headers.authorization
     const query = {
       isDeleted: false,
       $or: [
-        { userId: req.query?.userId },
-        { $and: [{ isPrivate: false }, { user: { $ne: req.query?.userId } }] },
+        { userId },
+        { $and: [{ isPrivate: false }, { userId: { $ne: userId } }] },
       ],
     }
     if (req.query.mood) {
