@@ -16,6 +16,10 @@ app.get('/', (req, res) => {
   res.send('Nine Server is running')
 })
 app.use((req, res, next) => {
+  if (/\/messages\/\w+/.test(req.path)) {
+    next()
+    return
+  }
   const userId = req.headers.authorization
   if (!userId) {
     res.status(400).send('权限验证失败：未设置用户 ID')

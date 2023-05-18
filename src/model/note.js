@@ -21,6 +21,8 @@ const NoteSchema = mongoose.Schema({
     },
   },
   isPrivate: { type: Boolean, default: false },
+  refNoteId: { type: mongoose.Types.ObjectId },
+  refNote: { type: Object },
   userId: { type: String, required: true },
   isDeleted: { type: Boolean, default: false },
   updatedAt: { type: Date, default: Date.now },
@@ -36,6 +38,10 @@ NoteSchema.index(
     createdAt: -1,
     updatedAt: -1,
   },
+  { partialFilterExpression: { isDeleted: false } }
+)
+NoteSchema.index(
+  { refNoteId: 1 },
   { partialFilterExpression: { isDeleted: false } }
 )
 const NoteModel = new mongoose.model('note', NoteSchema)

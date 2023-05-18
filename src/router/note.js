@@ -1,11 +1,13 @@
 import express from 'express'
 import NoteModel, { checkMoodsVaild } from '../model/note.js'
 import { checkSchema, validationResult, matchedData } from 'express-validator'
+import mongoose from 'mongoose'
 
 const router = express.Router()
 
 const checkAdd = checkSchema({
   title: {
+    optional: true,
     isString: true,
   },
   text: {
@@ -14,6 +16,10 @@ const checkAdd = checkSchema({
   moods: {
     isArray: { bail: true },
     custom: { options: checkMoodsVaild },
+  },
+  refNoteId: {
+    optional: true,
+    custom: { options: (id) => mongoose.isObjectIdOrHexString(id) },
   },
   isPrivate: {
     isBoolean: true,
@@ -29,8 +35,15 @@ router.post('/', checkAdd, async (req, res) => {
   }
   try {
     const data = matchedData(req)
-    const userId = req.headers.authorization
-    const note = new NoteModel({ ...data, userId })
+    data.userId = req.headers.authorization
+    if (data.refNoteId) {
+      const refNote = await NoteModel.findById(data.refNoteId).exec()
+      if (!refNote) {
+        throw new Error(`引用记录不存在~`)
+      }
+      data.refNote = refNote
+    }
+    const note = new NoteModel(data)
     await note.save()
     res.send()
   } catch (e) {
