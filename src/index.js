@@ -1,11 +1,14 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import wx from './router/wx.js'
 import user from './router/user.js'
 import note from './router/note.js'
 import message from './router/message.js'
 import { connectDatabase } from '../database.js'
 import { getUser } from './engine/user.js'
+
+if (!process.env.NINE_SERVER_CHECK) {
+  throw new Error('environment is not set')
+}
 
 const app = express()
 const port = 3000
@@ -16,7 +19,7 @@ app.get('/', (req, res) => {
   res.send('Nine Server is running')
 })
 app.use((req, res, next) => {
-  if (/\/messages\/\w+/.test(req.path)) {
+  if (/\/(messages\/\w+|wx)/.test(req.path)) {
     next()
     return
   }
@@ -31,7 +34,7 @@ app.use((req, res, next) => {
   }
   next()
 })
-app.use('/wx', wx)
+
 app.use('/users', user)
 app.use('/notes', note)
 app.use('/messages', message)
