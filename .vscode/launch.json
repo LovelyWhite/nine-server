@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Start",
-            "envFile": "${workspaceFolder}/env-local.sh",
+            "envFile": "${workspaceFolder}/local.env",
             "skipFiles": [
                 "<node_internals>/**"
             ],

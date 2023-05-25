@@ -1,5 +1,5 @@
 export const WX_BASE_URL = 'https://api.weixin.qq.com/cgi-bin'
-export const WX_COM_BASE_URL = 'https://qyapi.weixin.qq.com/cgi-bin'
+export const WX_CORP_BASE_URL = 'https://qyapi.weixin.qq.com/cgi-bin'
 export const DATABASE = 'mongodb://localhost:27017/nine'
 export const REDIS_URL = 'redis://127.0.0.1:6379'
 
@@ -9,10 +9,10 @@ export const SECRET = process.env.NINE_SERVER_SECRET
 export const TEMPLATEID = process.env.NINE_SERVER_TEMPLATEID
 export const SERVER_BASE_URL = process.env.NINE_SERVER_SERVER_BASE_URL
 
-export const WX_CROP_TOKEN = process.env.NINE_SERVER_WX_CROP_TOKEN
-export const CROP_ID = process.env.NINE_SERVER_CROP_ID
+export const WX_CORP_TOKEN = process.env.NINE_SERVER_WX_CORP_TOKEN
+export const CORP_ID = process.env.NINE_SERVER_CORP_ID
 export const AGENT_ID = process.env.NINE_SERVER_AGENT_ID
-export const CROP_SECRET = process.env.NINE_SERVER_CROP_SECRET
+export const CORP_SECRET = process.env.NINE_SERVER_CORP_SECRET
 //sensitive end
 
 export const MOODS = {
