@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
-import constants from '../constants.js'
-const { MOODS } = constants
+import { MOODS } from '../constants.js'
+
 export const checkMoodsVaild = (value) => {
   const list = value.filter((item) => !Object.keys(MOODS).includes(item))
   return list.length === 0
